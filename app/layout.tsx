@@ -6,6 +6,7 @@ import { Toaster } from '@/components/ui/toaster';
 import Navbar from '@/components/navbar';
 import Footer from '@/components/footer';
 import { cn } from '@/lib/utils';
+import { Grid2X2 } from 'lucide-react';
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -23,6 +24,26 @@ export const metadata: Metadata = {
   authors: [{ name: 'Gridshare Team' }],
   creator: 'Gridshare',
   publisher: 'Gridshare',
+  icons: {
+    icon: [
+      {
+        url: '/favicon.ico',
+        sizes: 'any',
+      },
+      {
+        url: '/icon.svg',
+        type: 'image/svg+xml',
+        sizes: 'any',
+      },
+    ],
+    apple: [
+      {
+        url: '/apple-touch-icon.png',
+        sizes: '180x180',
+        type: 'image/png',
+      },
+    ],
+  },
   formatDetection: {
     email: false,
     address: false,
