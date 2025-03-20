@@ -1,8 +1,13 @@
+"use client";
+
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import Image from "next/image";
 import { Calendar, Clock, ArrowRight } from "lucide-react";
+import { useState } from "react";
+import { useToast } from "@/components/ui/use-toast";
+import { Input } from "@/components/ui/input";
 
 const featuredPosts = [
   {
@@ -44,6 +49,77 @@ const categories = [
 ];
 
 export default function BlogPage() {
+  const { toast } = useToast();
+  const [email, setEmail] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState("");
+
+  const validateEmail = (email: string) => {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    if (!email.trim()) {
+      setError("Email is required");
+      toast({
+        variant: "error",
+        title: "Validation Error",
+        description: "Please enter your email address.",
+      });
+      return;
+    }
+
+    if (!validateEmail(email)) {
+      setError("Please enter a valid email address");
+      toast({
+        variant: "error",
+        title: "Validation Error",
+        description: "Please enter a valid email address.",
+      });
+      return;
+    }
+
+    setIsSubmitting(true);
+
+    try {
+      const response = await fetch("/api/newsletter", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to subscribe");
+      }
+
+      toast({
+        variant: "success",
+        title: "Success!",
+        description: "You've been subscribed to our newsletter.",
+      });
+
+      // Reset form
+      setEmail("");
+      setError("");
+    } catch (error) {
+      console.error("Newsletter subscription error:", error);
+      toast({
+        variant: "error",
+        title: "Error",
+        description: error instanceof Error ? error.message : "Failed to subscribe",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="container py-12 sm:py-24">
       {/* Hero Section */}
@@ -122,16 +198,32 @@ export default function BlogPage() {
         <p className="text-muted-foreground mb-6">
           Subscribe to our newsletter for the latest updates and blog posts.
         </p>
-        <div className="flex gap-4 justify-center">
-          <input
-            type="email"
-            placeholder="Enter your email"
-            className="px-4 py-2 rounded-md border max-w-sm w-full"
-          />
-          <Button style={{ backgroundColor: "#317B22" }}>
-            Subscribe
+        <form onSubmit={handleSubmit} className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+          <div className="w-full max-w-sm">
+            <Input
+              type="email"
+              placeholder="Enter your email"
+              value={email}
+              onChange={(e) => {
+                setEmail(e.target.value);
+                setError("");
+              }}
+              className={`w-full ${error ? "border-red-500" : ""}`}
+              required
+            />
+            {error && (
+              <p className="text-sm text-red-500 mt-1">{error}</p>
+            )}
+          </div>
+          <Button 
+            type="submit"
+            style={{ backgroundColor: "#317B22" }}
+            disabled={isSubmitting}
+            className="w-full sm:w-auto"
+          >
+            {isSubmitting ? "Subscribing..." : "Subscribe"}
           </Button>
-        </div>
+        </form>
       </div>
     </div>
   );
