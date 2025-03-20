@@ -9,31 +9,31 @@ import { cn } from "@/lib/utils";
 const testimonials = [
   {
     quote: "Gridshare has revolutionized how our team collaborates on data projects. The interface is intuitive and the features are powerful.",
-    author: "Sarah Johnson",
+    author: "John Paul Escalona",
     position: "Data Analyst at TechCorp",
     avatar: "SJ",
   },
   {
     quote: "The real-time collaboration features have made our remote work seamless. It's like having everyone in the same room.",
-    author: "Michael Chen",
+    author: "John Paul Escalona",
     position: "Project Manager at InnovateCo",
     avatar: "MC",
   },
   {
     quote: "Security was our main concern, and Gridshare exceeded our expectations. The audit logs and access controls are excellent.",
-    author: "Emma Williams",
+    author: "John Paul Escalona",
     position: "Security Officer at SecureData",
     avatar: "EW",
   },
   {
     quote: "The customer support team is exceptional. They're always ready to help and provide quick solutions.",
-    author: "David Miller",
+    author: "John Paul Escalona",
     position: "Operations Director at DataFlow",
     avatar: "DM",
   },
   {
     quote: "Gridshare's analytics features have helped us make better data-driven decisions. It's an essential tool for our business.",
-    author: "Lisa Thompson",
+    author: "John Paul Escalona",
     position: "Business Analyst at Analytics Pro",
     avatar: "LT",
   },
