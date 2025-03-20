@@ -27,7 +27,11 @@ async function connectDB() {
     if (!cached.promise) {
       const opts = {
         bufferCommands: false,
-        dbName: 'gridshare', // Explicitly set database name
+        dbName: 'gridshare',
+        maxPoolSize: 10,
+        serverSelectionTimeoutMS: 5000,
+        socketTimeoutMS: 45000,
+        connectTimeoutMS: 10000,
       };
 
       console.log('Connecting to MongoDB...');

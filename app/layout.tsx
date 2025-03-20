@@ -4,7 +4,7 @@ import { Inter } from 'next/font/google';
 import { ThemeProvider } from '@/components/theme-provider';
 import { Toaster } from '@/components/ui/toaster';
 import Navbar from '@/components/navbar';
-import Footer from '@/components/Footer';
+import Footer from '@/components/footer';
 import { cn } from '@/lib/utils';
 import { Grid2X2 } from 'lucide-react';
 
