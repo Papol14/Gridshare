@@ -53,7 +53,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Company Info */}
           <div className="space-y-4">
-            <h3 className="text-white text-lg font-semibold">Company Name</h3>
+            <h3 className="text-white text-lg font-semibold">Gridshare</h3>
             <p className="text-sm">
               Building the future of technology with innovative solutions.
             </p>
@@ -146,7 +146,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="mt-12 pt-8 border-t border-gray-800">
           <p className="text-center text-sm">
-            © {new Date().getFullYear()} Company Name. All rights reserved.
+            © {new Date().getFullYear()} Gridshare. All rights reserved.
           </p>
         </div>
       </div>
