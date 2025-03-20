@@ -89,6 +89,11 @@ export default function ContactPage() {
         const contentType = response.headers.get("content-type");
         if (contentType && contentType.includes("application/json")) {
           const errorData = await response.json();
+          if (errorData.details) {
+            // Handle validation errors
+            setErrors(errorData.details);
+            throw new Error("Please fix the validation errors below");
+          }
           throw new Error(errorData.error || "Failed to send message");
         } else {
           // If not JSON, get the text content

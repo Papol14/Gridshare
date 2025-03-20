@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
-import { Contact } from '@/models/Contact';
+import { Contact, IContact } from '@/models/Contact';
 
 // Input validation schema
 interface ContactFormData {
@@ -35,111 +35,132 @@ function validateContactForm(data: Partial<ContactFormData>): string | null {
 
 export async function POST(request: Request) {
   try {
-    // Check content type
-    const contentType = request.headers.get('content-type');
-    if (!contentType?.includes('application/json')) {
-      return NextResponse.json(
-        { error: 'Content-Type must be application/json' },
-        { 
-          status: 400,
-          headers: { 'Content-Type': 'application/json' }
-        }
-      );
-    }
+    // Connect to MongoDB
+    console.log('Attempting to connect to MongoDB...');
+    await connectDB();
+    console.log('Successfully connected to MongoDB');
 
     // Parse request body
     const body = await request.json();
+    console.log('Received contact form data:', body);
+    
+    const { firstName, lastName, email, subject, message } = body;
 
-    // Validate input data
-    if (!body.firstName?.trim()) {
+    // Validate required fields with specific messages
+    const validationErrors: Record<string, string> = {};
+    
+    if (!firstName?.trim()) {
+      validationErrors.firstName = 'First name is required';
+    } else if (firstName.length > 50) {
+      validationErrors.firstName = 'First name cannot exceed 50 characters';
+    } else if (firstName.length < 2) {
+      validationErrors.firstName = 'First name must be at least 2 characters long';
+    }
+
+    if (!lastName?.trim()) {
+      validationErrors.lastName = 'Last name is required';
+    } else if (lastName.length > 50) {
+      validationErrors.lastName = 'Last name cannot exceed 50 characters';
+    } else if (lastName.length < 2) {
+      validationErrors.lastName = 'Last name must be at least 2 characters long';
+    }
+
+    if (!email?.trim()) {
+      validationErrors.email = 'Email is required';
+    } else if (email.length > 100) {
+      validationErrors.email = 'Email cannot exceed 100 characters';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      validationErrors.email = 'Please enter a valid email address';
+    }
+
+    if (!subject?.trim()) {
+      validationErrors.subject = 'Subject is required';
+    } else if (subject.length > 200) {
+      validationErrors.subject = 'Subject cannot exceed 200 characters';
+    } else if (subject.length < 5) {
+      validationErrors.subject = 'Subject must be at least 5 characters long';
+    }
+
+    if (!message?.trim()) {
+      validationErrors.message = 'Message is required';
+    } else if (message.length > 2000) {
+      validationErrors.message = 'Message cannot exceed 2000 characters';
+    } else if (message.length < 10) {
+      validationErrors.message = 'Message must be at least 10 characters long';
+    }
+
+    // If there are validation errors, return them
+    if (Object.keys(validationErrors).length > 0) {
+      console.log('Validation errors:', validationErrors);
       return NextResponse.json(
-        { error: 'First name is required' },
         { 
-          status: 400,
-          headers: { 'Content-Type': 'application/json' }
-        }
+          error: 'Validation failed',
+          details: validationErrors
+        },
+        { status: 400 }
       );
     }
 
-    if (!body.lastName?.trim()) {
-      return NextResponse.json(
-        { error: 'Last name is required' },
-        { 
-          status: 400,
-          headers: { 'Content-Type': 'application/json' }
-        }
-      );
-    }
+    // Create new contact message
+    console.log('Creating new contact message...');
+    const contact = new Contact({
+      firstName: firstName.trim(),
+      lastName: lastName.trim(),
+      email: email.trim().toLowerCase(),
+      subject: subject.trim(),
+      message: message.trim(),
+      status: 'new'
+    });
 
-    if (!body.email?.trim()) {
-      return NextResponse.json(
-        { error: 'Email is required' },
-        { 
-          status: 400,
-          headers: { 'Content-Type': 'application/json' }
-        }
-      );
-    }
-
-    if (!body.subject?.trim()) {
-      return NextResponse.json(
-        { error: 'Subject is required' },
-        { 
-          status: 400,
-          headers: { 'Content-Type': 'application/json' }
-        }
-      );
-    }
-
-    if (!body.message?.trim()) {
-      return NextResponse.json(
-        { error: 'Message is required' },
-        { 
-          status: 400,
-          headers: { 'Content-Type': 'application/json' }
-        }
-      );
-    }
-
-    // Validate email format
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(body.email)) {
-      return NextResponse.json(
-        { error: 'Invalid email format' },
-        { 
-          status: 400,
-          headers: { 'Content-Type': 'application/json' }
-        }
-      );
-    }
-
-    // Connect to MongoDB with specific database
-    await connectDB('contacts_db');
-
-    // Create new contact submission
-    const contact = await Contact.create({
-      firstName: body.firstName.trim(),
-      lastName: body.lastName.trim(),
-      email: body.email.trim(),
-      subject: body.subject.trim(),
-      message: body.message.trim(),
+    // Save to database
+    console.log('Saving contact message to database...');
+    const savedContact = await contact.save();
+    console.log('Contact message saved successfully:', {
+      id: savedContact._id,
+      email: savedContact.email,
+      subject: savedContact.subject,
+      fullName: savedContact.fullName
     });
 
     return NextResponse.json(
-      { message: 'Message saved successfully', id: contact._id },
-      { 
-        status: 200,
-        headers: { 'Content-Type': 'application/json' }
-      }
+      { message: 'Message sent successfully' },
+      { status: 201 }
     );
-  } catch (error) {
-    console.error('Contact API error:', error);
+
+  } catch (error: any) {
+    // Log error details
+    console.error('Error saving contact message:', error);
+    console.error('Error name:', error.name);
+    console.error('Error message:', error.message);
+    if (error.stack) {
+      console.error('Error stack:', error.stack);
+    }
+
+    // Handle specific MongoDB errors
+    if (error.name === 'ValidationError') {
+      const validationErrors = Object.values(error.errors).map((err: any) => err.message);
+      console.error('Mongoose validation errors:', validationErrors);
+      return NextResponse.json(
+        { 
+          error: 'Validation failed',
+          details: validationErrors
+        },
+        { status: 400 }
+      );
+    }
+
+    if (error.code === 11000) {
+      console.error('Duplicate key error:', error);
+      return NextResponse.json(
+        { error: 'Duplicate entry found' },
+        { status: 409 }
+      );
+    }
+
+    // Generic error response
     return NextResponse.json(
-      { error: 'Internal server error' },
-      { 
-        status: 500,
-        headers: { 'Content-Type': 'application/json' }
-      }
+      { error: 'Failed to send message. Please try again later.' },
+      { status: 500 }
     );
   }
 } 
