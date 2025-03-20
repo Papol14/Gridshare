@@ -3,11 +3,12 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
-import { Grid2X2, Mail, Info, Menu, X } from "lucide-react";
+import { Grid2X2, Mail, Info, Menu, X, BookOpen } from "lucide-react";
 import { useState, useEffect, useCallback } from "react";
 
 const navigation = [
   { name: "Sheets", href: "/sheets", icon: Grid2X2 },
+  { name: "Blog", href: "/blog", icon: BookOpen },
   { name: "Contact", href: "/contact", icon: Mail },
   { name: "About", href: "/about", icon: Info },
 ];

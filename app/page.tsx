@@ -61,7 +61,7 @@ export default function Home() {
             <div className="relative hidden md:block">
               <div className="relative aspect-square w-full max-w-[600px] mx-auto">
                 <Image
-                  src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&q=80"
+                  src="https://i0.wp.com/pemmzchannel.com/wp-content/uploads/2023/06/Penyebab-Google-Spreadsheet-Lambat-dan-Cara-Mengatasinya.jpeg?fit=2048%2C1152&ssl=1"
                   alt="Data collaboration"
                   fill
                   className="rounded-lg object-cover shadow-xl"
