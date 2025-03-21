@@ -38,6 +38,9 @@ export const metadata: Metadata = {
     { media: '(prefers-color-scheme: light)', color: '#317B22' },
     { media: '(prefers-color-scheme: dark)', color: '#2A4D14' },
   ],
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({
