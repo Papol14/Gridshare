@@ -33,7 +33,7 @@ const contactSchema = new mongoose.Schema({
     trim: true,
     lowercase: true,
     maxlength: [100, 'Email cannot exceed 100 characters'],
-    match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please enter a valid email address']
+    match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Please enter a valid email address']
   },
   subject: {
     type: String,
@@ -59,6 +59,8 @@ const contactSchema = new mongoose.Schema({
     enum: ['new', 'read', 'replied', 'archived'],
     default: 'new'
   }
+}, {
+  timestamps: true
 });
 
 // Create indexes for better query performance
@@ -71,7 +73,7 @@ contactSchema.virtual('fullName').get(function() {
   return `${this.firstName} ${this.lastName}`;
 });
 
-// Add toJSON transform to include virtuals
+// Configure virtuals
 contactSchema.set('toJSON', { virtuals: true });
 contactSchema.set('toObject', { virtuals: true });
 

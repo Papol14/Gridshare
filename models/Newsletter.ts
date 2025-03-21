@@ -14,13 +14,15 @@ const newsletterSchema = new mongoose.Schema({
     trim: true,
     lowercase: true,
     maxlength: [100, 'Email cannot exceed 100 characters'],
-    match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please enter a valid email address']
+    match: [/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Please enter a valid email address']
   },
   subscribedAt: {
     type: Date,
     default: Date.now,
     immutable: true
   }
+}, {
+  timestamps: true
 });
 
 // Create index for better query performance

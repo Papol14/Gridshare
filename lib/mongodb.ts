@@ -32,53 +32,22 @@ async function connectDB() {
         serverSelectionTimeoutMS: 5000,
         socketTimeoutMS: 45000,
         connectTimeoutMS: 10000,
+        family: 4 // Force IPv4
       };
 
       console.log('Connecting to MongoDB...');
-      // Log URI without credentials for security
-      const sanitizedUri = MONGODB_URI.replace(/\/\/[^:]+:[^@]+@/, '//****:****@');
-      console.log('MongoDB URI:', sanitizedUri);
-      console.log('Database name:', opts.dbName);
-      
-      // Connect to MongoDB with the provided URI
       cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
         console.log('Connected to MongoDB successfully');
-        console.log('Database collections:', Object.keys(mongoose.connection.collections));
-        
-        // Log connection state
-        const state = mongoose.connection.readyState;
-        const stateMap: Record<number, string> = {
-          0: 'disconnected',
-          1: 'connected',
-          2: 'connecting',
-          3: 'disconnecting'
-        };
-        console.log('MongoDB connection state:', stateMap[state] || 'unknown');
-
         return mongoose;
       });
     }
 
-    try {
-      cached.conn = await cached.promise;
-      console.log('MongoDB connection established');
-      return cached.conn;
-    } catch (error) {
-      cached.promise = null;
-      throw error;
-    }
+    cached.conn = await cached.promise;
+    return cached.conn;
   } catch (error) {
     console.error('MongoDB connection error:', error);
-    if (error instanceof Error) {
-      console.error('Error details:', {
-        name: error.name,
-        message: error.message,
-        stack: error.stack
-      });
-    }
-    // Reset cached connection on error
-    cached.conn = null;
     cached.promise = null;
+    cached.conn = null;
     throw error;
   }
 }
