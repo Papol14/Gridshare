@@ -27,23 +27,23 @@ const values = [
 
 const team = [
   {
-    name: "Sarah Johnson",
+    name: "John Paul Escalona",
     role: "CEO & Founder",
     image: "/team/sarah.jpg",
   },
   {
-    name: "Michael Chen",
-    role: "CTO",
+    name: "John Paul Escalona",
+    role: "Project Manager",
     image: "/team/michael.jpg",
   },
   {
-    name: "Emily Rodriguez",
-    role: "Head of Design",
+    name: "John Paul Escalona",
+    role: "UI Designer",
     image: "/team/emily.jpg",
   },
   {
-    name: "David Kim",
-    role: "Lead Developer",
+    name: "John Paul Escalona",
+    role: "Full Stack Developer",
     image: "/team/david.jpg",
   },
 ];

@@ -58,7 +58,7 @@ export default function Navbar() {
       <nav className="container flex h-16 items-center justify-between">
         <Link 
           href="/" 
-          className="flex items-center space-x-2 transition-opacity hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-[#317B22] rounded-md"
+          className="flex items-center space-x-2 transition-opacity hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-[#317B22] p-1"
         >
           <Grid2X2 className="h-6 w-6" style={{ color: "#2A4D14" }} />
           <span className="text-xl font-bold" style={{ color: "#2A4D14" }}>
