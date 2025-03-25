@@ -7,6 +7,7 @@ import Navbar from '@/components/navbar';
 import Footer from '@/components/footer';
 import { cn } from '@/lib/utils';
 import { Grid2X2 } from 'lucide-react';
+import { SessionProvider } from '@/components/providers/SessionProvider';
 
 const inter = Inter({ 
   subsets: ['latin'],
@@ -49,13 +50,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={inter.variable}>
-      <body className="min-h-screen bg-background font-sans antialiased">
-        <div className="relative flex min-h-screen flex-col">
-          <Navbar />
-          <main className="flex-1">{children}</main>
-          <Footer />
-        </div>
+    <html lang="en" className={inter.variable} suppressHydrationWarning>
+      <body className="min-h-screen bg-background font-sans antialiased" suppressHydrationWarning>
+        <SessionProvider>
+          <div className="relative flex min-h-screen flex-col">
+            <Navbar />
+            <main className="flex-1">{children}</main>
+            <Footer />
+          </div>
+        </SessionProvider>
         <Toaster />
       </body>
     </html>
